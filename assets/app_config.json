@@ -13,72 +13,79 @@
       "body": {
         "widget": "Padding",
         "padding": 16,
-        "child": {
-          "widget": "Column",
-          "mainAxisAlignment": "center",
-          "children": [
-            {
-              "widget": "TextField",
-              "controller": "username",
-              "decoration": {
-                "hintText": "Username"
-              }
-            },
-            {
-              "widget": "TextField",
-              "controller": "password",
-              "obscureText": true,
-              "decoration": {
-                "hintText": "Password"
-              }
-            },
-            {
-              "widget": "Row",
+        "child":{
+          "widget":"Center",
+          "child": {
+            "widget":"SingleChildScrollView",
+            "child":{
+              "widget": "Column",
+              "mainAxisAlignment": "center",
+              "spacing": 12,
               "children": [
                 {
-                  "widget": "Checkbox",
-                  "controller": "rememberMe"
+                  "widget": "TextField",
+                  "controller": "username",
+                  "decoration": {
+                    "hintText": "Username"
+                  }
                 },
                 {
-                  "widget": "Text",
-                  "data": "Remember Me"
+                  "widget": "TextField",
+                  "controller": "password",
+                  "obscureText": true,
+                  "decoration": {
+                    "hintText": "Password"
+                  }
+                },
+                {
+                  "widget": "Row",
+                  "children": [
+                    {
+                      "widget": "Checkbox",
+                      "controller": "rememberMe"
+                    },
+                    {
+                      "widget": "Text",
+                      "data": "Remember Me"
+                    }
+                  ]
+                },
+                {
+                  "widget": "ElevatedButton",
+                  "text": "Login",
+                  "action": {
+                    "type": "login",
+                    "fields": [
+                      "username",
+                      "password"
+                    ]
+                  }
+                },
+                {
+                  "widget": "GestureDetector",
+                  "onTap": {
+                    "type": "forgotPassword"
+                  },
+                  "child": {
+                    "widget": "Text",
+                    "data": "Forgot Password?",
+                    "style": {
+                      "color": "#2196F3",
+                      "decoration": "underline"
+                    }
+                  }
+                },
+                {
+                  "widget": "TextButton",
+                  "text": "Create New Account",
+                  "onPressed": {
+                    "type": "navigate",
+                    "route": "/createAccount"
+                  }
                 }
               ]
-            },
-            {
-              "widget": "ElevatedButton",
-              "text": "Login",
-              "action": {
-                "type": "login",
-                "fields": [
-                  "username",
-                  "password"
-                ]
-              }
-            },
-            {
-              "widget": "GestureDetector",
-              "onTap": {
-                "type": "forgotPassword"
-              },
-              "child": {
-                "widget": "Text",
-                "data": "Forgot Password?",
-                "style": {
-                  "color": "#2196F3",
-                  "decoration": "underline"
-                }
-              }
-            },
-            {
-              "widget": "TextButton",
-              "text": "Create New Account",
-              "onPressed": {
-                "type": "navigate",
-                "route": "/createAccount"
-              }
             }
-          ]
+          }
         }
       }
     },
@@ -97,6 +104,7 @@
         "child": {
           "widget": "Column",
           "mainAxisAlignment": "center",
+          "spacing": 12,
           "children": [
             {
               "widget": "TextField",

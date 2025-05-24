@@ -21,14 +21,20 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
     final type = node['widget'];
     switch (type) {
       case 'Scaffold':
+        // Always wrap body in 16 padding
+        Widget? bodyWidget =
+            node['body'] != null ? _buildWidget(node['body'], context) : null;
+        bodyWidget = Padding(
+          padding: const EdgeInsets.all(16),
+          child: bodyWidget,
+        );
         return Scaffold(
           appBar:
               node['appBar'] != null
                   ? _buildWidget(node['appBar'], context)
                       as PreferredSizeWidget?
                   : null,
-          body:
-              node['body'] != null ? _buildWidget(node['body'], context) : null,
+          body: bodyWidget,
         );
       case 'AppBar':
         return AppBar(
@@ -40,6 +46,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
       case 'Column':
         return Column(
           mainAxisSize: MainAxisSize.max,
+          spacing: node['spacing'] != null ? node['spacing'].toDouble() : 0,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment:
               node['mainAxisAlignment'] == 'center'
@@ -69,13 +76,24 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
             !_controllers.containsKey(controllerName)) {
           _controllers[controllerName] = TextEditingController();
         }
+        // Always use outlined border
         return TextField(
           controller:
               controllerName != null ? _controllers[controllerName] : null,
           obscureText: node['obscureText'] == true,
-          decoration:
-              node['decoration'] != null
-                  ? InputDecoration(hintText: node['decoration']['hintText'])
+          decoration: InputDecoration(
+            hintText:
+                node['decoration'] != null
+                    ? node['decoration']['hintText']
+                    : null,
+            border: const OutlineInputBorder(),
+          ),
+        );
+      case 'SingleChildScrollView':
+        return SingleChildScrollView(
+          child:
+              node['child'] != null
+                  ? _buildWidget(node['child'], context)
                   : null,
         );
       case 'Checkbox':
@@ -103,22 +121,26 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
           },
         );
       case 'ElevatedButton':
-        return ElevatedButton(
-          onPressed: () async {
-            if (node['action'] != null) {
-              final action = node['action'];
-              if (action['type'] == 'login') {
-                final username = _controllers['username']?.text ?? '';
-                final password = _controllers['password']?.text ?? '';
-                await login(context, username, password);
-                return;
+        // Make button full width using SizedBox and double.infinity
+        return SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () async {
+              if (node['action'] != null) {
+                final action = node['action'];
+                if (action['type'] == 'login') {
+                  final username = _controllers['username']?.text ?? '';
+                  final password = _controllers['password']?.text ?? '';
+                  await login(context, username, password);
+                  return;
+                }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Action: ${node['action']['type']}')),
+                );
               }
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Action: ${node['action']['type']}')),
-              );
-            }
-          },
-          child: Text(node['text'] ?? 'Button'),
+            },
+            child: Text(node['text'] ?? 'Button'),
+          ),
         );
       case 'TextButton':
         return TextButton(
@@ -168,6 +190,13 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
         }
         return Padding(
           padding: padding,
+          child:
+              node['child'] != null
+                  ? _buildWidget(node['child'], context)
+                  : null,
+        );
+      case 'Center':
+        return Center(
           child:
               node['child'] != null
                   ? _buildWidget(node['child'], context)
