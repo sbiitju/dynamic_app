@@ -7,6 +7,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
   final Map<String, dynamic> json;
   JsonWidgetTreeInterpreter(this.json, {super.key});
 
+  // Controllers for text fields and checkboxes
   final Map<String, TextEditingController> _controllers = {};
   final Map<String, bool> _boolControllers = {};
 
@@ -15,6 +16,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
     return _buildWidget(json, context);
   }
 
+  // Recursively builds widgets from JSON config
   Widget _buildWidget(Map<String, dynamic> node, BuildContext context) {
     final type = node['widget'];
     switch (type) {
@@ -82,6 +84,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
             !_boolControllers.containsKey(controllerName)) {
           _boolControllers[controllerName] = false;
         }
+        // Use StatefulBuilder to manage checkbox state locally
         return StatefulBuilder(
           builder: (context, setState) {
             return Checkbox(
@@ -111,7 +114,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
                 return;
               }
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Action: \\${node['action']['type']}')),
+                SnackBar(content: Text('Action: ${node['action']['type']}')),
               );
             }
           },
@@ -128,7 +131,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
                 return;
               }
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('onPressed: \\${onPressed['type']}')),
+                SnackBar(content: Text('onPressed: ${onPressed['type']}')),
               );
             }
           },
@@ -139,7 +142,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
           onTap: () {
             if (node['onTap'] != null) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('onTap: \\${node['onTap']['type']}')),
+                SnackBar(content: Text('onTap: ${node['onTap']['type']}')),
               );
             }
           },
@@ -175,6 +178,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
     }
   }
 
+  // Parses text style from JSON
   TextStyle? _parseTextStyle(Map<String, dynamic>? style) {
     if (style == null) return null;
     return TextStyle(
@@ -184,6 +188,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
     );
   }
 
+  // Parses color from hex string
   Color? _parseColor(dynamic colorString) {
     if (colorString is String && colorString.startsWith('#')) {
       final hex = colorString.replaceFirst('#', '');
@@ -196,6 +201,7 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
     return null;
   }
 
+  // Handles login network request, response, and token storage
   Future<void> login(
     BuildContext context,
     String username,
@@ -212,7 +218,6 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
       print('Login response: ' + response.body);
       final data = jsonDecode(response.body);
       if (data['message'] == 'Authentication successful') {
-        // Save JWT token
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt_token', data['result'] ?? '');
         ScaffoldMessenger.of(context).showSnackBar(
