@@ -5,7 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class JsonWidgetTreeInterpreter extends StatelessWidget {
   final Map<String, dynamic> json;
-  JsonWidgetTreeInterpreter(this.json, {super.key});
+  final Map<String, dynamic>? mergedConfig;
+  JsonWidgetTreeInterpreter(this.json, {super.key, this.mergedConfig});
 
   // Controllers for text fields and checkboxes
   final Map<String, TextEditingController> _controllers = {};
@@ -18,6 +19,29 @@ class JsonWidgetTreeInterpreter extends StatelessWidget {
 
   // Recursively builds widgets from JSON config
   Widget _buildWidget(Map<String, dynamic> node, BuildContext context) {
+    // $ref resolution
+    if (node.containsKey("\$ref")) {
+      final refKey = node["\$ref"];
+      if (mergedConfig != null) {
+        if (mergedConfig!["_components"] != null &&
+            mergedConfig!["_components"][refKey] != null) {
+          return _buildWidget(
+            Map<String, dynamic>.from(mergedConfig!["_components"][refKey]),
+            context,
+          );
+        } else if (mergedConfig!["_widgets"] != null &&
+            mergedConfig!["_widgets"][refKey] != null) {
+          return _buildWidget(
+            Map<String, dynamic>.from(mergedConfig!["_widgets"][refKey]),
+            context,
+          );
+        }
+      }
+      return Text(
+        'Component/Widget not found: $refKey',
+        style: TextStyle(color: Colors.red),
+      );
+    }
     final type = node['widget'];
     switch (type) {
       case 'Scaffold':

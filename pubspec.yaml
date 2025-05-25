@@ -60,4 +60,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/app_config.json
-    - assets/app_config.yaml
+    - assets/config/app_config.yaml
+    - assets/config/widgets.yaml
+    - assets/config/components.yaml

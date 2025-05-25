@@ -3,16 +3,26 @@ import 'package:flutter/services.dart';
 import 'package:campus_sheba/dynamic_app.dart';
 import 'package:yaml/yaml.dart';
 
+Future<Map<String, dynamic>> loadYamlFile(String path) async {
+  final String yamlString = await rootBundle.loadString(path);
+  final dynamic yamlData = loadYaml(yamlString);
+  return _yamlToMap(yamlData);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Load YAML config from assets (assets/app_config.yaml)
-  final String configString = await rootBundle.loadString(
-    'assets/app_config.yaml',
-  );
-  final dynamic config = loadYaml(configString);
-  // Convert YamlMap to Map<String, dynamic>
-  final Map<String, dynamic> configMap = _yamlToMap(config);
-  runApp(DynamicApp(config: configMap));
+  final config = await loadYamlFile('assets/config/app_config.yaml');
+  final components = await loadYamlFile('assets/config/components.yaml');
+  final widgets = await loadYamlFile('assets/config/widgets.yaml');
+
+  // Merge all into a single config map for $ref resolution
+  final mergedConfig = {
+    ...config,
+    '_components': components,
+    '_widgets': widgets,
+  };
+
+  runApp(DynamicApp(config: mergedConfig));
 }
 
 // Helper to convert YamlMap/YamlList to Map<String, dynamic>/List recursively
