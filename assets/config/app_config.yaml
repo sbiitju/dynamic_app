@@ -1,0 +1,110 @@
+appName: Dynamic Auth App
+routes:
+  "/":
+    widget: Scaffold
+    appBar:
+      widget: AppBar
+      title:
+        widget: Text
+        data: Login
+    body:
+      widget: Padding
+      padding: 16
+      child:
+        widget: Center
+        child:
+          widget: SingleChildScrollView
+          child:
+            widget: Column
+            mainAxisAlignment: center
+            spacing: 12
+            children:
+              - widget: TextField
+                controller: username
+                decoration:
+                  hintText: Username
+              - widget: TextField
+                controller: password
+                obscureText: true
+                decoration:
+                  hintText: Password
+              - widget: Row
+                children:
+                  - widget: Checkbox
+                    controller: rememberMe
+                  - widget: Text
+                    data: Remember Me
+              - widget: ElevatedButton
+                text: Login
+                action:
+                  type: login
+                  fields:
+                    - username
+                    - password
+              - widget: GestureDetector
+                onTap:
+                  type: forgotPassword
+                child:
+                  widget: Text
+                  data: Forgot Password?
+                  style:
+                    color: "#2196F3"
+                    decoration: underline
+              - widget: TextButton
+                text: Create New Account
+                onPressed:
+                  type: navigate
+                  route: /createAccount
+  "/createAccount":
+    widget: Scaffold
+    appBar:
+      widget: AppBar
+      title:
+        widget: Text
+        data: Create Account
+    body:
+      widget: Padding
+      padding: 16
+      child:
+        widget: Column
+        mainAxisAlignment: center
+        spacing: 12
+        children:
+          - widget: TextField
+            controller: fullName
+            decoration:
+              hintText: Full Name
+          - widget: TextField
+            controller: email
+            decoration:
+              hintText: Email
+            validation:
+              type: email
+          - widget: TextField
+            controller: username
+            decoration:
+              hintText: Username
+          - widget: TextField
+            controller: password
+            obscureText: true
+            decoration:
+              hintText: Password
+          - widget: TextField
+            controller: confirmPassword
+            obscureText: true
+            decoration:
+              hintText: Confirm Password
+            validation:
+              type: match
+              field: password
+          - widget: ElevatedButton
+            text: Register
+            action:
+              type: register
+              fields:
+                - fullName
+                - email
+                - username
+                - password
+                - confirmPassword
+initialRoute: "/"

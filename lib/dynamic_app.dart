@@ -18,8 +18,7 @@ class DynamicApp extends StatelessWidget {
       title: config['appName'] ?? 'Dynamic App',
       theme: themeData,
       onGenerateRoute:
-          (settings) =>
-              JsonRouterInterpreter(config['routes']).onGenerateRoute(settings),
+          (settings) => JsonRouterInterpreter(config).onGenerateRoute(settings),
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
     );

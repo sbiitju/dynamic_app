@@ -1,0 +1,15 @@
+LoginForm:
+  widget: Column
+  mainAxisAlignment: center
+  spacing: 12
+  children:
+    - widget: TextField
+      controller: username
+      decoration:
+        hintText: Username
+    - widget: TextField
+      controller: password
+      obscureText: true
+      decoration:
+        hintText: Password
+    - widget: LoginButton

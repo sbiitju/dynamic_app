@@ -1,0 +1,21 @@
+TextFieldUsername:
+  widget: TextField
+  controller: username
+  decoration:
+    hintText: Username
+
+TextFieldPassword:
+  widget: TextField
+  controller: password
+  obscureText: true
+  decoration:
+    hintText: Password
+
+LoginButton:
+  widget: ElevatedButton
+  text: Login
+  action:
+    type: login
+    fields:
+      - username
+      - password
